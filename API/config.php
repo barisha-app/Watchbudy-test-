@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-const SITE_NAME = 'Barisha Media';
+const SITE_NAME = 'Haber Akadememi';
 
 const YOUTUBE_CHANNELS = [
     'https://youtube.com/@sinemood',
@@ -13,18 +13,13 @@ const YOUTUBE_CHANNELS = [
     'https://youtube.com/@mostproductionofficial',
 ];
 
-/*
- | BURAYA SADECE SANA AIT VEYA KULLANIM IZNI OLAN M3U8 YAYINLARINI KOY
- | Örnek:
- | 'url' => 'https://seninsite.com/live/yayin1.m3u8'
-*/
 const HLS_STREAMS = [
     [
-        'id' => 'live_1',
-        'title' => 'Canlı Yayın 1',
-        'url' => 'https://example.com/path/to/your-stream.m3u8',
-        'poster' => 'https://via.placeholder.com/640x360?text=Canli+Yayin+1',
+        'id' => 'iptv_1',
+        'title' => 'IPTV Kanal 1',
+        'url' => 'http://gtx4ktv.xyz:2086/bhamed/HB2134/177238',
+        'poster' => 'https://via.placeholder.com/640x360?text=IPTV+Kanal',
         'type' => 'm3u8',
-        'category' => 'live'
+        'category' => 'iptv'
     ],
 ];
