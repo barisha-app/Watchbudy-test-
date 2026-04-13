@@ -3,74 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Medya Merkezi</title>
+    <title>Haber Akadememi</title>
     <style>
-        body {
-            margin: 0;
-            background: #111;
-            color: #fff;
-            font-family: Arial, sans-serif;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 24px;
-        }
-        h1 {
-            margin-bottom: 20px;
-        }
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-            gap: 18px;
-        }
-        .card {
-            background: #1c1c1c;
-            border-radius: 14px;
-            overflow: hidden;
-            box-shadow: 0 8px 24px rgba(0,0,0,.25);
-        }
-        .card img {
-            width: 100%;
-            height: 160px;
-            object-fit: cover;
-            display: block;
-        }
-        .content {
-            padding: 14px;
-        }
-        .type {
-            display: inline-block;
-            background: #333;
-            border-radius: 999px;
-            padding: 4px 8px;
-            font-size: 12px;
-            margin-bottom: 10px;
-        }
-        .title {
-            font-size: 16px;
-            line-height: 1.4;
-            min-height: 46px;
-        }
-        .meta {
-            font-size: 13px;
-            color: #bbb;
-            margin-top: 8px;
-        }
-        .btn {
-            display: inline-block;
-            margin-top: 12px;
-            padding: 10px 14px;
-            background: #2563eb;
-            color: white;
-            text-decoration: none;
-            border-radius: 10px;
-        }
+        body{margin:0;background:#111;color:#fff;font-family:Arial,sans-serif}
+        .container{max-width:1200px;margin:0 auto;padding:24px}
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+        .card{background:#1c1c1c;border-radius:14px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+        .card img{width:100%;height:160px;object-fit:cover;display:block}
+        .content{padding:14px}
+        .type{display:inline-block;background:#333;border-radius:999px;padding:4px 8px;font-size:12px;margin-bottom:10px}
+        .title{font-size:16px;line-height:1.4;min-height:46px}
+        .meta{font-size:13px;color:#bbb;margin-top:8px}
+        .btn{display:inline-block;margin-top:12px;padding:10px 14px;background:#2563eb;color:#fff;text-decoration:none;border-radius:10px}
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>Medya Merkezi</h1>
+    <h1>Haber Akadememi</h1>
     <div id="grid" class="grid"></div>
 </div>
 
@@ -90,11 +39,11 @@ async function loadData() {
 
         let button = '';
         if (item.type === 'youtube') {
-            button = `<a class="btn" href="${item.url}" target="_blank">YouTube'da Aç</a>`;
+            button = `<a class="btn" href="${item.url}" target="_blank" rel="noopener noreferrer">YouTube'da Aç</a>`;
         } else if (item.type === 'm3u8') {
             const title = encodeURIComponent(item.title || 'Yayın');
             const url = encodeURIComponent(item.url || '');
-            button = `<a class="btn" href="/player.php?title=${title}&url=${url}" target="_blank">Yayını Aç</a>`;
+            button = `<a class="btn" href="/player.php?title=${title}&url=${url}" target="_blank" rel="noopener noreferrer">Yayını Aç</a>`;
         }
 
         return `
