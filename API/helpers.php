@@ -21,7 +21,7 @@ function httpGet(string $url): string
     curl_setopt_array($ch, [
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_TIMEOUT => 25,
+        CURLOPT_TIMEOUT => 30,
         CURLOPT_CONNECTTIMEOUT => 10,
         CURLOPT_USERAGENT => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123 Safari/537.36',
         CURLOPT_HTTPHEADER => [
@@ -63,6 +63,7 @@ function extractHandleFromUrl(string $url): ?string
     }
 
     $parts = explode('/', trim($path, '/'));
+
     if (!isset($parts[0])) {
         return null;
     }
@@ -76,48 +77,59 @@ function extractHandleFromUrl(string $url): ?string
 
 function extractYtInitialData(string $html): ?array
 {
-    if (!preg_match('/var ytInitialData = (.*?);<\/script>/s', $html, $matches)) {
-        if (!preg_match('/ytInitialData"\]\s*=\s*(\{.*?\});/s', $html, $matches)) {
-            return null;
-        }
+    if (preg_match('/var ytInitialData = (.*?);<\/script>/s', $html, $matches)) {
+        $json = $matches[1];
+        $data = json_decode($json, true);
+        return is_array($data) ? $data : null;
     }
 
-    $json = trim($matches[1]);
-    $data = json_decode($json, true);
+    if (preg_match('/ytInitialData"\]\s*=\s*(\{.*?\});/s', $html, $matches)) {
+        $json = $matches[1];
+        $data = json_decode($json, true);
+        return is_array($data) ? $data : null;
+    }
 
-    return is_array($data) ? $data : null;
+    return null;
 }
 
 function findVideosRecursive(mixed $node, array &$results): void
 {
-    if (is_array($node)) {
-        if (isset($node['videoRenderer']) && is_array($node['videoRenderer'])) {
-            $video = $node['videoRenderer'];
+    if (!is_array($node)) {
+        return;
+    }
 
-            $videoId = $video['videoId'] ?? null;
-            $title = $video['title']['runs'][0]['text'] ?? null;
-            $thumb = $video['thumbnail']['thumbnails'] ?? [];
-            $published = $video['publishedTimeText']['simpleText'] ?? '';
-            $length = $video['lengthText']['simpleText'] ?? '';
+    if (isset($node['videoRenderer']) && is_array($node['videoRenderer'])) {
+        $video = $node['videoRenderer'];
 
-            if ($videoId && $title) {
-                $results[] = [
-                    'id' => 'yt_' . $videoId,
-                    'source_id' => $videoId,
-                    'title' => $title,
-                    'thumbnail' => end($thumb)['url'] ?? '',
-                    'url' => 'https://www.youtube.com/watch?v=' . $videoId,
-                    'embed' => 'https://www.youtube.com/embed/' . $videoId,
-                    'published_text' => $published,
-                    'duration' => $length,
-                    'type' => 'youtube',
-                ];
+        $videoId = $video['videoId'] ?? null;
+        $title = $video['title']['runs'][0]['text'] ?? null;
+        $thumbs = $video['thumbnail']['thumbnails'] ?? [];
+        $published = $video['publishedTimeText']['simpleText'] ?? '';
+        $duration = $video['lengthText']['simpleText'] ?? '';
+
+        if ($videoId && $title) {
+            $lastThumb = '';
+            if (!empty($thumbs)) {
+                $last = end($thumbs);
+                $lastThumb = $last['url'] ?? '';
             }
-        }
 
-        foreach ($node as $child) {
-            findVideosRecursive($child, $results);
+            $results[] = [
+                'id' => 'yt_' . $videoId,
+                'source_id' => $videoId,
+                'title' => $title,
+                'thumbnail' => $lastThumb,
+                'url' => 'https://www.youtube.com/watch?v=' . $videoId,
+                'embed' => 'https://www.youtube.com/embed/' . $videoId,
+                'published_text' => $published,
+                'duration' => $duration,
+                'type' => 'youtube',
+            ];
         }
+    }
+
+    foreach ($node as $child) {
+        findVideosRecursive($child, $results);
     }
 }
 
@@ -143,8 +155,8 @@ function fetchChannelVideos(string $channelUrl, int $limit = 12): array
         $videos = [];
         findVideosRecursive($data, $videos);
 
-        $seen = [];
         $clean = [];
+        $seen = [];
 
         foreach ($videos as $video) {
             if (isset($seen[$video['source_id']])) {
