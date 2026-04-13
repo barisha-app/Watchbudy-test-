@@ -7,7 +7,7 @@ require_once __DIR__ . '/helpers.php';
 function getLocalJson(string $path): array
 {
     $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    $host = $_SERVER['HTTP_HOST'] ?? 'haberakedemi.com.tr';
     $url = $scheme . '://' . $host . $path;
 
     try {
