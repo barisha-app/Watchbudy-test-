@@ -7,31 +7,13 @@ $title = $_GET['title'] ?? 'Yayın';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= htmlspecialchars($title) ?></title>
+    <title><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?></title>
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
-    <style>
-        body {
-            margin: 0;
-            background: #111;
-            color: #fff;
-            font-family: Arial, sans-serif;
-        }
-        .wrap {
-            max-width: 960px;
-            margin: 30px auto;
-            padding: 16px;
-        }
-        video {
-            width: 100%;
-            background: #000;
-            border-radius: 12px;
-        }
-    </style>
 </head>
-<body>
-<div class="wrap">
-    <h1><?= htmlspecialchars($title) ?></h1>
-    <video id="video" controls autoplay></video>
+<body style="margin:0;background:#111;color:#fff;font-family:Arial,sans-serif;">
+<div style="max-width:960px;margin:30px auto;padding:16px;">
+    <h1><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?></h1>
+    <video id="video" controls autoplay style="width:100%;background:#000;border-radius:12px;"></video>
 </div>
 
 <script>
